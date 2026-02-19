@@ -4,10 +4,6 @@ import {
  orderBy, doc, setDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-/* =========================
-   CATEGORY POINTS
-========================= */
-
 const CAT_POINTS = {
  islamic: 3,
  general: 2,
@@ -15,30 +11,60 @@ const CAT_POINTS = {
 };
 
 /* =========================
-   FUZZY NORMALIZER (UPGRADED)
+   NORMALIZER (AR + EN)
 ========================= */
 
 function norm(s){
  return s
   .toLowerCase()
+  .replace(/[أإآ]/g,"ا")
+  .replace(/ة/g,"ه")
+  .replace(/ى/g,"ي")
   .replace(/[^\p{L}\p{N}]+/gu,"")
   .trim();
 }
 
-function fuzzyMatch(input, answers){
+/* ========================= */
+
+function singleMatch(input, answers){
  const n = norm(input);
  return answers.some(a => norm(a) === n);
 }
 
+function multiMatch(input, answers){
+
+ const userParts = input
+   .split(/,|and|&/gi)
+   .map(x => norm(x))
+   .filter(x => x);
+
+ const correctParts =
+  answers.map(x => norm(x));
+
+ if(userParts.length !== correctParts.length)
+   return false;
+
+ return correctParts.every(a =>
+  userParts.includes(a)
+ );
+}
+
+function checkAnswer(userAnswer, correctAnswers){
+
+ if(correctAnswers.length > 1){
+   return multiMatch(userAnswer, correctAnswers);
+ }else{
+   return singleMatch(userAnswer, correctAnswers);
+ }
+}
+
 /* =========================
-   MAIN SUBMIT
+   SUBMIT
 ========================= */
 
 export async function submitAnswer({
  uid,name,cat,day,userAnswer,correctAnswers,time
 }){
-
-/* ---- prevent multi submit per cat ---- */
 
 const alreadyQ = query(
  collection(db,"answers"),
@@ -54,11 +80,8 @@ if(!alreadySnap.empty){
  return;
 }
 
-/* ---- check correctness ---- */
-
-const ok = fuzzyMatch(userAnswer,correctAnswers);
-
-/* ---- log answer ---- */
+const ok =
+ checkAnswer(userAnswer,correctAnswers);
 
 await addDoc(collection(db,"answers"),{
  uid,name,cat,day,
@@ -70,9 +93,7 @@ await addDoc(collection(db,"answers"),{
 
 if(!ok) return;
 
-/* =========================
-   TOP2 LOCK
-========================= */
+/* Top2 */
 
 const winnersQ = query(
  collection(db,"dailyScores"),
@@ -81,14 +102,9 @@ const winnersQ = query(
 );
 
 const winnersSnap = await getDocs(winnersQ);
+if(winnersSnap.size >= 2) return;
 
-if(winnersSnap.size >= 2){
- return; // already have top2
-}
-
-/* =========================
-   RANK BY SPEED
-========================= */
+/* Rank by speed */
 
 const correctQ = query(
  collection(db,"answers"),
@@ -109,56 +125,10 @@ correctSnap.forEach((d,i)=>{
 
 if(rank === 0 || rank > 2) return;
 
-/* =========================
-   SAVE DAILY SCORE
-========================= */
-
 await addDoc(collection(db,"dailyScores"),{
  uid,name,cat,day,
  pts: CAT_POINTS[cat],
  rank,
  ts:serverTimestamp()
 });
-
-/* =========================
-   BEST OF DAY LOGIC
-========================= */
-
-await recomputeBestOfDay(uid,name,day);
-}
-
-/* =========================
-   BEST OF DAY CALC
-========================= */
-
-async function recomputeBestOfDay(uid,name,day){
-
-const q = query(
- collection(db,"dailyScores"),
- where("uid","==",uid),
- where("day","==",day)
-);
-
-const snap = await getDocs(q);
-
-let best = 0;
-
-snap.forEach(d=>{
- const p = d.data().pts;
- if(p > best) best = p;
-});
-
-if(best === 0) return;
-
-/* ---- update user total ---- */
-
-const uref = doc(db,"users",uid);
-const udoc = await getDoc(uref);
-
-const prev = udoc.exists() ? (udoc.data().points || 0) : 0;
-
-await setDoc(uref,{
- name,
- points: prev + best
-},{merge:true});
 }

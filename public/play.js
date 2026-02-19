@@ -1,24 +1,12 @@
 import { db, auth } from "./firebaseInit.js";
 import { submitAnswer } from "./scoreEngine.js";
-
-import {
- doc, getDoc
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+import { doc, getDoc }
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-
 /* =========================
-   RAMADAN START — CAIRO
-========================= */
-
-const RAMADAN_START =
- new Date("2026-02-19T22:00:00+02:00");
-
-
-/* =========================
-   TIME HELPERS
+   TIME SETTINGS (TEST 12:30)
 ========================= */
 
 function nowCairo(){
@@ -29,18 +17,14 @@ function nowCairo(){
  );
 }
 
-function today10pm(){
+function quizOpenTime(){
  const n = nowCairo();
  return new Date(
   n.getFullYear(),
   n.getMonth(),
   n.getDate(),
-  22,0,0
+  0,30,0   // ⬅ 12:30 AM
  );
-}
-
-function quizOpenTime(){
- return today10pm();
 }
 
 function quizCloseTime(){
@@ -49,7 +33,6 @@ function quizCloseTime(){
   + 40*60*1000
  );
 }
-
 
 /* =========================
    AUTH
@@ -63,31 +46,20 @@ onAuthStateChanged(auth,(user)=>{
  startPage(user);
 });
 
-
-/* =========================
-   START PAGE
-========================= */
+/* ========================= */
 
 function startPage(user){
- loadHijri();
  loadQuestions();
  startTimer();
- setupVoice();
 }
 
-
 /* =========================
-   DAY INDEX REAL
+   DAY INDEX
 ========================= */
 
 function dayIndex(){
- const diff =
- Math.floor(
-  (nowCairo()-RAMADAN_START)/86400000
- );
- return "day"+(diff+1);
+ return "day1"; // ⬅ للاختبار فقط
 }
-
 
 /* =========================
    TIMER
@@ -104,26 +76,20 @@ function startTimer(){
 
   const now = nowCairo();
 
-  if(now < RAMADAN_START){
-   el.textContent="Starts in Ramadan";
-   return;
-  }
-
   if(now < quizOpenTime()){
-   show(
-    Math.floor(
-     (quizOpenTime()-now)/1000
-    )
-   );
+   el.textContent="Waiting...";
    return;
   }
 
   if(now < quizCloseTime()){
-   show(
+   const sec =
     Math.floor(
      (quizCloseTime()-now)/1000
-    )
-   );
+    );
+   const m=Math.floor(sec/60);
+   const s=sec%60;
+   el.textContent=
+    `${m}:${s.toString().padStart(2,'0')}`;
    return;
   }
 
@@ -131,15 +97,7 @@ function startTimer(){
   lockAllBoxes();
 
  },1000);
-
- function show(sec){
-  const m=Math.floor(sec/60);
-  const s=sec%60;
-  el.textContent=
-   `${m}:${s.toString().padStart(2,'0')}`;
- }
 }
-
 
 /* =========================
    LOAD QUESTIONS
@@ -148,14 +106,6 @@ function startTimer(){
 async function loadQuestions(){
 
  const now = nowCairo();
-
- if(now < RAMADAN_START){
-  setLockedText(
-   "Locked until Ramadan 🌙"
-  );
-  lockAllBoxes();
-  return;
- }
 
  if(now < quizOpenTime()){
   setLockedText(
@@ -190,17 +140,22 @@ async function loadQuestions(){
  ).textContent=d.sports.q;
 }
 
+/* ========================= */
+
 function setLockedText(msg){
  document.querySelectorAll(".question")
  .forEach(q=>q.textContent=msg);
 }
 
+function lockAllBoxes(){
+ document.querySelectorAll(
+ "input,.submit-btn"
+ ).forEach(e=>e.disabled=true);
+}
 
 /* =========================
-   SUBMIT ANSWER
+   SUBMIT
 ========================= */
-
-const quizStartTime = Date.now();
 
 document.querySelectorAll(
  ".submit-btn"
@@ -219,8 +174,6 @@ document.querySelectorAll(
   const user =
   auth.currentUser;
 
-  if(!user) return;
-
   const box =
   this.closest(".challenge-box");
 
@@ -231,14 +184,9 @@ document.querySelectorAll(
   box.querySelector("input")
   .value.trim();
 
-  if(!val){
-   alert("Type answer first");
-   return;
-  }
-
   const seconds =
   Math.floor(
-   (Date.now()-quizStartTime)/1000
+   (Date.now()-quizOpenTime().getTime())/1000
   );
 
   const day = dayIndex();
@@ -259,92 +207,6 @@ document.querySelectorAll(
    time:seconds
   });
 
-  box.querySelector("input")
-  .disabled=true;
-
-  btn.disabled=true;
-
   alert("Submitted");
  };
 });
-
-
-/* =========================
-   LOCK INPUTS
-========================= */
-
-function lockAllBoxes(){
- document.querySelectorAll(
- "input,.submit-btn"
- ).forEach(e=>e.disabled=true);
-}
-
-
-/* =========================
-   HIJRI DATE
-========================= */
-
-async function loadHijri(){
- try{
-  const today=
-  new Date()
-  .toISOString()
-  .split("T")[0];
-
-  const r=await fetch(
-   `https://api.aladhan.com/v1/gToH?date=${today}`
-  );
-
-  const j=await r.json();
-  const h=j.data.hijri;
-
-  const el=
-  document.getElementById(
-   "hijriDate"
-  );
-
-  if(el){
-   el.textContent=
-    `${h.day} ${h.month.en} ${h.year} AH`;
-  }
-
- }catch(e){
-  console.log("hijri error",e);
- }
-}
-
-
-/* =========================
-   VOICE INPUT
-========================= */
-
-function setupVoice(){
-
- const SR =
- window.SpeechRecognition
- || window.webkitSpeechRecognition;
-
- if(!SR) return;
-
- document.querySelectorAll(
- ".voice-btn"
- ).forEach(btn=>{
-
-  btn.onclick=()=>{
-
-   const rec=new SR();
-   rec.lang="ar";
-   rec.start();
-
-   rec.onresult=e=>{
-    btn.closest(
-     ".challenge-box"
-    )
-    .querySelector("input")
-    .value=
-    e.results[0][0]
-    .transcript;
-   };
-  };
- });
-}
