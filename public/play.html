@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play — Ramadan League</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="play.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">
+    <img src="images/logo.png">
+  </div>
+  <nav>
+         
+  </nav>
+</header>
+
+<div class="back-container">
+      <a href="index.html" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i> Back to Home
+      </a> </div>
+<section class="play-wrap">
+  <nav>
+  <span id="profileName"></span>
+</nav>
+
+<h1>Today's Challenge</h1>
+
+<div class="hijri" id="hijriDate">
+Loading Hijri date...
+</div>
+
+<div class="main-timer">
+Time until quiz:
+<span id="mainTimer">00:00:00</span>
+</div>
+
+<div class="challenge-grid">
+
+  <!-- Islamic -->
+  <div class="challenge-box islamic" data-cat="islamic">
+    <h3><i class="fa-solid fa-mosque"></i> Islamic — 3 pts</h3>
+        <div class="question">The question will appear at 10:00 PM</div>
+    <input type="text" placeholder="Type answer">
+    <div class="actions">
+      <button class="voice-btn"><i class="fa-solid fa-microphone"></i></button>
+      <button class="submit-btn">Submit</button>
+    </div>
+  </div>
+
+  <!-- General -->
+  <div class="challenge-box general" data-cat="general">
+    <h3><i class="fa-solid fa-globe"></i> General — 2 pts</h3>
+    <div class="question">The question will appear at 10:00 PM</div>
+    <input type="text" placeholder="Type answer">
+    <div class="actions">
+      <button class="voice-btn"><i class="fa-solid fa-microphone"></i></button>
+      <button class="submit-btn">Submit</button>
+    </div>
+  </div>
+
+  <!-- Sports -->
+  <div class="challenge-box sports" data-cat="sports">
+    <h3><i class="fa-solid fa-trophy"></i> Sports — 1 pt</h3>
+    <div class="question">The question will appear at 10:00 PM</div>
+    <input type="text" placeholder="Type answer">
+    <div class="actions">
+      <button class="voice-btn"><i class="fa-solid fa-microphone"></i></button>
+      <button class="submit-btn">Submit</button>
+    </div>
+  </div>
+
+</div>
+
+</section>
+
+<script type="module" src="play.js"></script>
+</body>
+</html>

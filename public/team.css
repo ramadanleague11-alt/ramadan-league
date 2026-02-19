@@ -1,0 +1,255 @@
+/* --- 1. Global Fixes (Based on Leaderboard Logic) --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box !important;
+    max-width: 100% !important; /* Prevents horizontal overflow */
+}
+
+html, body {
+    width: 100% !important;
+    overflow-x: hidden !important; /* Fixes horizontal scroll */
+    background-color: #0a0a1a;
+    color: #fff;
+    font-family: 'Poppins', 'Cairo', sans-serif;
+}
+
+/* --- 2. Team Hero Section --- */
+.team-hero {
+    text-align: center;
+    padding: 100px 20px 40px;
+    background: radial-gradient(circle at top, rgba(255, 215, 0, 0.15), transparent);
+}
+
+.team-hero h1 { 
+    color: #ffd700; 
+    font-size: clamp(1.8rem, 8vw, 2.8rem); /* Responsive text size */
+    margin-bottom: 10px; 
+}
+
+/* --- 3. About Section (With Hover) --- */
+.about-rl { padding: 40px 15px; width: 100% !important; }
+.about-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    padding: 30px 20px;
+    border-radius: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    transition: 0.4s ease; /* Hover transition */
+}
+
+.about-container:hover {
+    transform: scale(1.02);
+    border-color: #ffd700;
+    box-shadow: 0 10px 40px rgba(255, 215, 0, 0.1);
+}
+
+/* --- 4. Team Grid (Instagram Style) --- */
+.team-grid {
+    display: flex;
+    flex-wrap: wrap; /* Flexible for mobile */
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 15px;
+    width: 100% !important;
+}
+
+.member-card {
+    flex: 1 1 280px; /* Adapts like leaderboard boxes */
+    max-width: 330px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 35px 20px;
+    text-align: center;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.member-card:hover {
+    transform: translateY(-12px);
+    border-color: #ffd700;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.15);
+}
+
+/* Instagram Profile Circle (The Circle) */
+.avatar-wrapper img {
+    width: 130px; /* Increased size as requested */
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 4px;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); /* Instagram Gradient */
+    border: 3px solid #ffd700;
+    margin-bottom: 20px;
+    transition: 0.3s ease;
+}
+
+.member-card:hover .avatar-wrapper img {
+    transform: scale(1.05) rotate(3deg);
+}
+
+.member-card h3 { color: #fff; margin-bottom: 8px; font-size: 1.5rem; }
+.role { color: #ffd700; font-weight: bold; display: block; margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; }
+.member-card p { font-size: 0.95rem; color: #ccc; line-height: 1.6; }
+
+/* --- 5. Beliefs Section --- */
+.beliefs { text-align: center; padding: 60px 15px; }
+.belief-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 30px;
+}
+.belief-item {
+    background: rgba(255, 215, 0, 0.1);
+    padding: 12px 25px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    color: #ffd700;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.belief-item:hover { transform: scale(1.1); background: rgba(255, 215, 0, 0.2); }
+
+/* --- Footer Boxes (Sponsors & Collaborate) --- */
+.footer-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 40px 5%;
+    justify-content: center;
+    width: 100% !important;
+}
+
+.sponsors-box, .contact-box {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    /* خلفية داكنة فخمة تناسب الأجواء الرمضانية */
+    background: linear-gradient(145deg, rgba(20, 25, 45, 0.95), rgba(10, 10, 20, 0.95));
+    padding: 40px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* ضروري جداً لتأثير اللمعة */
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* تأثير اللمعان الذهبي (Shine Animation) */
+.sponsors-box::before, .contact-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 215, 0, 0.2), /* لمعة ذهبية واضحة */
+        transparent
+    );
+    transform: skewX(-30deg);
+    transition: 0.7s ease-in-out;
+    pointer-events: none;
+}
+
+/* تشغيل اللمعة عند تمرير الماوس على أي من الصندوقين */
+.sponsors-box:hover::before, .contact-box:hover::before {
+    left: 150%;
+}
+
+.sponsors-box:hover, .contact-box:hover {
+    transform: translateY(-8px);
+    border-color: #ffd700; /* تفتيح الإطار عند الهوفر */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+/* تنسيق النصوص */
+.sponsors-box h3, .contact-box h3 {
+    color: #ffd700 !important;
+    margin-bottom: 15px;
+    font-size: 1.7rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.sponsors-box p, .contact-box p {
+    color: #e0e0e0;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* زر الـ Collaborate الذهبي (تعديلات شاملة) */
+.btn-gold {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 14px 35px;
+    background: #ffd700;
+    color: #000 !important; /* لون النص أسود ليكون واضح */
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 800; /* خط عريض وجذاب */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    border: 2px solid transparent;
+}
+
+.btn-gold:hover {
+    background: transparent;
+    color: #ffd700 !important; /* ينعكس اللون عند الهوفر */
+    border-color: #ffd700;
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5); /* إضاءة (Glow) قوية */
+}
+
+/* رابط الإنستجرام في البوكس الثاني */
+.insta-link {
+    color: #ffd700;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.insta-link:hover {
+    text-decoration: underline;
+    filter: brightness(1.2);
+}
+
+/* --- 7. Social Link Buttons --- */
+.member-insta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffd700;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50px;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.member-insta:hover { background: #ffd700; color: #000; }
+
+/* --- 8. Mobile Responsive Overrides --- */
+@media (max-width: 768px) {
+    .team-hero { padding: 80px 15px 30px; }
+    .footer-sections { flex-direction: column; }
+    .sponsors-box, .contact-box { min-width: 100% !important; }
+    .member-card { flex: 1 1 100%; } /* Stacks cards vertically on mobile */
+}

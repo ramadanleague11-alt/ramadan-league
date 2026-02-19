@@ -1,0 +1,108 @@
+/* ===== Page Hero ===== */
+
+.page-hero{
+  text-align:center;
+  padding:80px 20px 40px;
+}
+
+.page-hero h1{
+  font-size:40px;
+  color:#f5c77a;
+}
+
+.page-hero p{
+  opacity:.9;
+  margin-top:10px;
+}
+
+/* ===== Rules Grid ===== */
+
+.rules-wrap{
+  max-width:950px;
+  margin:auto;
+  padding:20px;
+  display:grid;
+  gap:22px;
+}
+
+.rule-card{
+  background:rgba(0,0,0,.45);
+  border-radius:18px;
+  padding:26px;
+  backdrop-filter: blur(6px);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.25s;
+}
+
+.rule-card:hover{
+  transform: translateY(-4px);
+}
+
+.rule-card h2{
+  color:#ffd27d;
+  margin-bottom:12px;
+  font-size:20px;
+}
+
+.rule-card ul{
+  line-height:1.9;
+  opacity:.95;
+}
+
+/* ===== FAQ ===== */
+
+.faq{
+  max-width:950px;
+  margin:40px auto;
+  padding:20px;
+}
+
+.faq h2{
+  text-align:center;
+  color:#ffd27d;
+  margin-bottom:20px;
+}
+
+.faq-item{
+  margin-bottom:14px;
+}
+
+.faq-item button{
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(0,0,0,.4);
+  color:white;
+  cursor:pointer;
+  font-size:15px;
+  
+}
+
+.faq-item p{
+  display:none;
+  padding:14px;
+  background:rgba(255,255,255,.06);
+  border-radius:10px;
+  margin-top:10px;
+  line-height:1.6;
+  opacity: 9;
+}
+
+.faq-item p.show{
+  display:block;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 600px){
+
+.page-hero h1{
+  font-size:28px;
+}
+
+.rule-card{
+  padding:20px;
+}
+
+}

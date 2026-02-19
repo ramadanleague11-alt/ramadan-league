@@ -1,0 +1,228 @@
+/* --- 1. Global Reset & Fixes --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box !important;
+  font-family: 'Poppins', sans-serif;
+  max-width: 100% !important; /* Prevents elements from leaking out */
+}
+
+html, body {
+  background: linear-gradient(to bottom, #0a0f1e, #101b33);
+  color: #fff;
+  overflow-x: hidden !important; /* Final kill for horizontal scroll */
+  width: 100% !important;
+}
+
+/* --- 2. Navbar & Header (Responsive) --- */
+header.navbar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 10px 20px !important;
+  background: rgba(0, 0, 0, 0.8);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100% !important;
+}
+
+header.navbar .logo img {
+  height: 40px;
+  width: auto;
+}
+
+/* Menu Toggle Styling */
+.menu-toggle {
+  font-size: 24px;
+  cursor: pointer;
+  color: #f5c77a;
+}
+
+/* --- 3. Leaderboard Content --- */
+.leaderboard-page {
+  width: 100% !important;
+  max-width: 800px; /* Better for readability on desktop */
+  margin: auto;
+  padding: 20px 15px;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(28px, 8vw, 36px); /* Responsive font size */
+  margin-bottom: 30px;
+  color: #f5c77a;
+  text-shadow: 0 0 10px rgba(245, 199, 122, 0.3);
+}
+
+/* Ranking Sections */
+.ranking h2 {
+  font-size: 20px;
+  margin: 20px 0 10px 0;
+  border-bottom: 2px solid #f5c77a;
+  padding-bottom: 5px;
+  color: #f5c77a;
+}
+
+.ranking ul {
+  list-style: none;
+  width: 100%;
+}
+
+.ranking ul li {
+  padding: 15px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+/* --- 4. Badges & Stats --- */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(245, 199, 122, 0.2);
+  border-radius: 12px;
+  padding: 15px 5px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  background: #f5c77a;
+  color: #000;
+  transform: translateY(-5px);
+}
+
+/* --- 5. Mobile Specific Fixes --- */
+@media (max-width: 480px) {
+  .ranking ul li {
+    font-size: 14px;
+    padding: 12px 8px;
+  }
+  
+  /* Ensuring Navbar doesn't stack vertically in mobile header */
+  header.navbar {
+    flex-direction: row !important; 
+  }
+
+  /* Hide the nav links by default on mobile (handled by JS toggle) */
+  .navbar nav {
+    display: none; 
+  }
+}
+
+/* --- Special Styling for Top 3 Ranks --- */
+
+/* Gold - 1st Place */
+.ranking ul li:nth-child(1) {
+    background: linear-gradient(90deg, rgba(245, 200, 122, 0.15) 0%, rgba(245, 200, 122, 0.05) 100%) !important;
+    border-left: 4px solid #f5c77a !important;
+    box-shadow: 0 0 15px rgba(245, 199, 122, 0.2);
+}
+.ranking ul li:nth-child(1)::before {
+    content: "🏆 "; /* Gold Trophy icon */
+    margin-right: 10px;
+}
+
+/* Silver - 2nd Place */
+.ranking ul li:nth-child(2) {
+    border-left: 4px solid #c0c0c0 !important;
+    background: rgba(192, 192, 192, 0.05) !important;
+}
+.ranking ul li:nth-child(2)::before {
+    content: "🥈 "; /* Silver Medal icon */
+    margin-right: 10px;
+}
+
+/* Bronze - 3rd Place */
+.ranking ul li:nth-child(3) {
+    border-left: 4px solid #cd7f32 !important;
+    background: rgba(205, 127, 50, 0.05) !important;
+}
+.ranking ul li:nth-child(3)::before {
+    content: "🥉 "; /* Bronze Medal icon */
+    margin-right: 10px;
+}
+
+/* --- Glassmorphism Effect for Sections --- */
+.ranking-daily-ranking, 
+.overall-ranking {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px); /* Blurs the background stars slightly */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 15px !important;
+    margin-bottom: 25px !important;
+}
+
+/* Row animations when hovering */
+.ranking ul li {
+    transition: all 0.3s ease !important;
+    cursor: default;
+}
+
+.ranking ul li:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: scale(1.02); /* Slight zoom in effect */
+}
+
+/* --- Enhanced Badge Styling --- */
+.badge {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(245, 199, 122, 0.1) !important;
+}
+
+.badge::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+
+.badge:hover::after {
+    left: 100%; /* Shine effect animation on hover */
+}
+
+/* Mobile Navigation Styling */
+@media (max-width: 768px) {
+    #navmenu {
+        display: none; /* Hidden by default on mobile */
+        flex-direction: column;
+        background: rgba(10, 15, 30, 0.95);
+        position: absolute;
+        top: 60px; /* Below the header */
+        right: 0;
+        width: 100%;
+        padding: 20px;
+        z-index: 999;
+        border-bottom: 2px solid #f5c77a;
+    }
+
+    /* When JavaScript adds the 'active' class, show the menu */
+    #navmenu.active {
+        display: flex !important;
+    }
+
+    #navmenu a {
+        margin: 15px 0;
+        font-size: 18px;
+        text-align: center;
+    }
+}

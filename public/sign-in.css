@@ -1,0 +1,160 @@
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family: system-ui, -apple-system, Arial;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at top, #14532d, #052e1b);
+}
+
+/* wrapper */
+
+.signin-wrapper{
+  width:100%;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+}
+
+/* card */
+
+.signin-card{
+  width:100%;
+  max-width:420px;
+  background:#0b3d2e;
+  border-radius:20px;
+  padding:40px 30px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.08);
+  animation:pop .5s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.9); opacity:.6;}
+  to{transform:scale(1); opacity:1;}
+}
+
+/* logo */
+
+.logo{
+  color:#4ade80;
+  margin-bottom:10px;
+}
+
+.logo i{
+  font-size:34px;
+}
+
+.logo h1{
+  font-size:22px;
+  margin-top:6px;
+}
+
+/* text */
+
+h2{
+  color:white;
+  margin-top:10px;
+}
+
+.subtitle{
+  color:#cbd5e1;
+  margin:10px 0 28px;
+  font-size:14px;
+}
+
+/* google button */
+
+.google-btn{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  color:#111;
+  background:linear-gradient(
+    120deg,
+    #ffffff,
+    #facc15,
+    #ffffff
+  );
+  background-size:200% 100%;
+  animation:shine 3s linear infinite;
+  transition:.25s;
+}
+
+@keyframes shine{
+  0%{background-position:0%}
+  100%{background-position:200%}
+}
+
+.google-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(250,204,21,.4);
+}
+
+.google-btn i{
+  margin-right:8px;
+}
+
+/* note */
+
+.note{
+  margin-top:22px;
+  color:#86efac;
+  font-size:13px;
+}
+
+/* mobile boost */
+
+@media (max-width:480px){
+
+  .signin-card{
+    padding:50px 24px;
+  }
+
+  .google-btn{
+    font-size:17px;
+    padding:18px;
+  }
+
+}
+
+.user-profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+}
+
+.nav-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #ffd700;
+}
+
+.nav-username {
+    color: white;
+    font-weight: bold;
+}
+
+.logout-btn-style {
+    background: #ff4b2b;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}

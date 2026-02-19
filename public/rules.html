@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rules — Ramadan League</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="rules.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<header class="navbar">
+  <div class="logo">
+    <img src="images/logo.png" alt="Ramadan League">
+    <span> RL </span>
+  </div>
+
+  <div class="menu-toggle" id="menuToggle">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <nav id="navmenu">
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="play.html">Play</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="rules.html">Rules</a>
+      <a href="team.html">RL Team</a>
+    </div>
+
+    <div id="nav-auth-container">
+
+      <a href="sign-in.html" id="signBtn" class="sign-btn">Sign In</a>
+
+      <div class="nav-profile" id="navProfile" style="display:none">
+        <img id="navAvatar" class="nav-avatar" src="" alt="avatar">
+
+        <div class="profile-menu" id="profileMenu">
+          <div class="profile-name" id="profileName"></div>
+          <a href="leaderboard.html#my">My Stats</a>
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+    </div>
+
+  </nav>
+</header>
+
+<!-- Title -->
+<section class="page-hero">
+  <h1>Competition Rules</h1>
+  <p>Fair play — fast answers — daily challenge</p>
+</section>
+
+<!-- Rules -->
+<section class="rules-wrap">
+
+  <div class="rule-card">
+    <h2><i class="fa-regular fa-clock"></i> Time Rules</h2>
+    <ul>
+      <li>Quiz opens daily at 10:00 PM Cairo time</li>
+      <li>Timer Duration: 40 Minutes</li>
+            <li>Submissions lock at 10:40 PM</li>
+    </ul>
+  </div>
+
+  <div class="rule-card">
+    <h2><i class="fa-solid fa-circle-question"></i> Questions</h2>
+    <ul>
+      <li>3 questions every day</li>
+      <li>Voice answer supported</li>
+      <li>One attempt per category</li>
+    </ul>
+  </div>
+
+  <div class="rule-card">
+    <h2><i class="fa-solid fa-star"></i> Scoring</h2>
+    <ul>
+      <li>Islamic = 3 points</li>
+      <li>General = 2 points</li>
+      <li>Sports = 1 point</li>
+      <li>First Top 2 from all categories</li>
+    </ul>
+  </div>
+
+  <div class="rule-card">
+    <h2><i class="fa-solid fa-gift"></i> Bonus Points</h2>
+    <ul>
+      <li>10-day streak = bonus point</li>
+      <li>Instagram story share days (5, 10, 15)</li>
+      <li>Mention Ramadan League</li>
+      <li>Bonus reviewed by admin</li>
+    </ul>
+  </div>
+
+  <div class="rule-card">
+    <h2><i class="fa-solid fa-award"></i> Badges</h2>
+    <ul>
+      <li>Fastest Answer</li>
+      <li>Winner of the Day</li>
+      <li>5-Day Streak</li>
+      <li>10-Day Streak</li>
+    </ul>
+  </div>
+
+  <div class="rule-card">
+    <h2><i class="fa-solid fa-shield"></i> Fair Play</h2>
+    <ul>
+      <li>One account per player</li>
+      <li>No multiple submissions</li>
+      <li>Suspicious activity may be reviewed</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+
+<h2>FAQ</h2>
+
+<div class="faq-item">
+<button>When do questions appear?</button>
+<p>Every day exactly at 10 PM Cairo time.</p>
+</div>
+
+<div class="faq-item">
+<button>Can I change my answer?</button>
+<p>No — once submitted it becomes locked.</p>
+</div>
+
+<div class="faq-item">
+<button>Can I answer by voice?</button>
+<p>Yes — voice converts to text automatically.</p>
+</div>
+
+<div class="faq-item">
+<button>How do bonus points work?</button>
+<p>10 days Streak and special share days give bonus points.</p>
+</div>
+
+</section>
+
+<footer>
+<p>© Ramadan League</p>
+<a href="#"><i class="fa-brands fa-instagram"></i></a>
+</footer>
+
+
+<script type="module" src="script.js"></script>
+<script>
+  document.querySelectorAll(".faq-item button").forEach(btn => {
+    btn.onclick = function() {
+      const answer = this.nextElementSibling;
+      if (answer) {
+        answer.classList.toggle("show");
+      }
+    };
+  });
+</script>
+
+</body>
+</html>

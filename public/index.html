@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ramadan League</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Stars -->
+<div class="stars"></div>
+<div class="stars2"></div>
+<div class="stars3"></div>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="logo">
+    <img src="images/logo.png"
+    alt="Ramadan League">
+    <span> RL </span>
+  </div>
+
+  <!-- hamburger -->
+
+  <div class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i>
+  </div> 
+
+  <nav id="navmenu">
+    <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="play.html">Play</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="rules.html">Rules</a>
+    <a href="team.html">RL Team</a>
+    </div>
+    <div id="nav-auth-container">
+    <a href="login.html"id="signBtn" class="sign-btn">sign in</a>
+  <!-- Profile (hidden until login) -->
+<div class="nav-profile" id="navProfile" style="display:none">
+
+  <img id="navAvatar" class="nav-avatar" src="" alt="avatar">
+
+  <div class="profile-menu" id="profileMenu">
+    <div class="profile-name" id="profileName"></div>
+
+    <a href="leaderboard.html#my">My Stats</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+</div>
+  </div>
+  </nav>
+  
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>RAMADAN LEAGUE</h1>
+  <p>Compete. Answer Fast. Win Ramadan.</p>
+
+  <div class="timer">
+    Quiz starts in <span id="countdown">00:00:00</span>
+  </div>
+
+  <a href="play.html" class="cta">
+    <i class="fa-solid fa-play"></i> Play Today
+  </a>
+</section>
+
+<!-- How it works -->
+<section class="how">
+  <h2>How It Works</h2>
+
+  <div class="how-steps">
+    <div class="how-box">
+      <i class="fa-solid fa-pen"></i>
+      <span class="num">1</span>
+      <h3>Answer</h3>
+    </div>
+
+    <div class="how-box">
+      <i class="fa-solid fa-bolt"></i>
+      <span class="num">2</span>
+      <h3>Be Fast</h3>
+    </div>
+
+    <div class="how-box">
+      <i class="fa-solid fa-trophy"></i>
+      <span class="num">3</span>
+      <h3>Win</h3>
+    </div>
+  </div>
+
+  <p class="how-sub">Are you ready for today’s challenge?</p>
+</section>
+
+<!-- Categories -->
+<section class="categories">
+  <h2>Today's Categories</h2>
+
+  <div class="cards">
+    <div class="card islamic">
+      <i class="fa-solid fa-mosque"></i>
+      <span>Islamic</span>
+    </div>
+
+    <div class="card general">
+      <i class="fa-solid fa-globe"></i>
+      <span>General</span>
+    </div>
+
+    <div class="card sports">
+      <i class="fa-solid fa-trophy"></i>
+      <span>Sports</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="stats">
+  <h2 class="heat-title">The Competition Is Heating Up</h2>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <i class="fa-solid fa-users"></i>
+      <span id="playerstoday">0</span>
+      <p>Players Today</p>
+    </div>
+
+    <div class="stat-box">
+      <i class="fa-solid fa-bolt"></i>
+      <span id="fastest">--</span>
+      <p>Fastest Answer</p>
+    </div>
+
+    <div class="stat-box">
+      <i class="fa-solid fa-crown"></i>
+      <span id="leader">---</span>
+      <p>Current Leader</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © Ramadan League
+  <a href="#"><i class="fa-brands fa-instagram"></i></a>
+</footer>
+
+<script type="module" src="script.js"></script>
+
+
+</body>
+</html>

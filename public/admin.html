@@ -1,0 +1,102 @@
+<script type="module">
+
+import { db, auth } from "./firebaseInit.js";
+import {
+ collection,getDocs,query,orderBy
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+import { onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+/* ===== ADMIN LOCK ===== */
+
+const ADMIN_UIDS = [
+ "0tnh2XNjDIT6VjGpIzsguSCfH352",
+ "nhP9mJTcB7MpXXVXE3xMfQhakL92"
+];
+
+onAuthStateChanged(auth,user=>{
+ if(!user || !ADMIN_UIDS.includes(user.uid)){
+   document.body.innerHTML="Not allowed";
+   return;
+ }
+ load();
+});
+
+/* ===== LOAD ===== */
+
+async function load(){
+
+ const q=query(collection(db,"dailyScores"),orderBy("ts","desc"));
+ const snap=await getDocs(q);
+
+ const rows=[];
+
+ snap.forEach(d=>{
+  rows.push(d.data());
+ });
+
+ render(rows);
+ window.ALL = rows;
+}
+
+/* ===== TABLE ===== */
+
+function render(arr){
+ const tbody=document.getElementById("tbody");
+ tbody.innerHTML="";
+
+ arr.forEach(x=>{
+  tbody.innerHTML+=`
+   <tr>
+    <td>${x.name}</td>
+    <td>${x.cat}</td>
+    <td>${x.pts}</td>
+    <td>${x.rank}</td>
+    <td>${x.day}</td>
+   </tr>`;
+ });
+}
+
+/* ===== FILTER ===== */
+
+window.filterCat = function(cat){
+ render(window.ALL.filter(x=>x.cat===cat));
+}
+
+/* ===== CSV ===== */
+
+window.exportCSV=function(){
+
+ let csv="name,cat,pts,rank,day\n";
+
+ window.ALL.forEach(x=>{
+  csv+=`${x.name},${x.cat},${x.pts},${x.rank},${x.day}\n`;
+ });
+
+ const blob=new Blob([csv]);
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="report.csv";
+ a.click();
+}
+
+</script>
+
+<table border="1">
+<thead>
+<tr>
+<th>Name</th>
+<th>Cat</th>
+<th>Pts</th>
+<th>Rank</th>
+<th>Day</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+<button onclick="filterCat('islamic')">Islamic</button>
+<button onclick="filterCat('general')">General</button>
+<button onclick="filterCat('sports')">Sports</button>
+<button onclick="exportCSV()">Export CSV</button>

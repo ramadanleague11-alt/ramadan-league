@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard - Ramadan League</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS --> 
+   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="leaderboard.css" />
+</head>
+<body>
+
+  <header class="navbar">
+  <div class="logo">
+    <img src="images/logo.png" alt="Ramadan League">
+    <span> RL </span>
+  </div>
+
+  <div class="menu-toggle" id="menuToggle">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <nav id="navmenu">
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="play.html">Play</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="rules.html">Rules</a>
+      <a href="team.html">RL Team</a>
+    </div>
+
+    <div id="nav-auth-container">
+
+      <a href="login.html" id="signBtn" class="sign-btn">Sign In</a>
+
+      <div class="nav-profile" id="navProfile" style="display:none">
+        <img id="navAvatar" class="nav-avatar" src="" alt="avatar">
+
+        <div class="profile-menu" id="profileMenu">
+          <div class="profile-name" id="profileName"></div>
+          <a href="leaderboard.html#my">My Stats</a>
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+    </div>
+
+  </nav>
+</header>
+
+  <main class="leaderboard-page">
+    <h1>Leaderboard</h1>
+    
+<div id="board"></div>
+
+    <!-- Daily Ranking -->
+    <section class="ranking daily-ranking">
+      <h2>Daily Ranking</h2>
+      <ul id="dailyList">
+        <!-- Top 5 users injected by JS -->
+      </ul>
+      <button class="show-more" data-target="dailyList">Show More</button>
+    </section>
+
+    <!-- Overall Ranking -->
+    <section class="ranking overall-ranking">
+      <h2>Overall Ranking</h2>
+      <ul id="overallList">
+        <!-- Top 5 users injected by JS -->
+      </ul>
+      <button class="show-more" data-target="overallList">Show More</button>
+    </section>
+
+    <!-- My Stats -->
+    <section class="my-stats">
+      <h2>My Stats</h2>
+      <p>My Points: <span id="myPoints">0</span></p>
+      <p>My Rank: <span id="myRank">#0</span></p>
+      <p>Current Streak: <i class="fa-solid fa-fire"></i> <span id="myStreak">0</span></p>
+      <button class="show-more" data-target="myStatsDetails">Show More</button>
+    </section>
+
+    <!-- Badges -->
+    <section class="badges">
+      <h2>Unlock Badges</h2>
+      <div class="badge-grid">
+        <div class="badge"><i class="fa-solid fa-bolt"></i><span>Fastest</span></div>
+        <div class="badge"><i class="fa-solid fa-trophy"></i><span>Winner</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+
+        <div class="badge"><i class="fa-solid fa-bolt"></i><span>Top 3</span></div>
+        <div class="badge"><i class="fa-solid fa-users"></i><span>3 Wins</span></div>
+        <div class="badge"><i class="fa-solid fa-fire"></i><span>5 Day</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+
+        <div class="badge"><i class="fa-solid fa-calendar-day"></i><span>10 Day</span></div>
+        <div class="badge"><i class="fa-solid fa-share-nodes"></i><span>Share</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+        <div class="badge locked"><i class="fa-solid fa-lock"></i><span>Locked</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="leaderboard.js"></script>
+  <script type="module" src="script.js"></script>
+<script type="module" src="firebaseInit.js"></script>
+
+</body>
+</html>

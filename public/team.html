@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RL Team — Ramadan League</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="team.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+  <div class="logo">
+    <img src="images/logo.png" alt="Ramadan League">
+    <span> RL </span>
+  </div>
+
+  <div class="menu-toggle" id="menuToggle">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <nav id="navmenu">
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="play.html">Play</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="rules.html">Rules</a>
+      <a href="team.html">RL Team</a>
+    </div>
+
+    <div id="nav-auth-container">
+
+      <a href="login.html" id="signBtn" class="sign-btn">Sign In</a>
+
+      <div class="nav-profile" id="navProfile" style="display:none">
+        <img id="navAvatar" class="nav-avatar" src="" alt="avatar">
+
+        <div class="profile-menu" id="profileMenu">
+          <div class="profile-name" id="profileName"></div>
+          <a href="leaderboard.html#my">My Stats</a>
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+    </div>
+
+  </nav>
+</header>
+
+    <section class="team-hero">
+        <h1>The Team Behind Ramadan League</h1>
+        <p>Built by a small team — for a big challenge</p>
+    </section>
+
+    <section class="about-rl">
+        <div class="about-container">
+            <h2> About Ramadan League</h2>
+            <p>Ramadan League is now in its third season. What started as a simple quiz idea has grown into a competitive Ramadan challenge platform. This year we launch an upgraded version with better scoring, daily tracking, and fair competition tools.</p>
+        </div>
+    </section>
+
+    <section class="team-grid">
+    
+    <div class="member-card">
+        <div class="avatar-wrapper">
+            <img src="images/MJ.jpeg" alt="Muslim">
+        </div>
+        <h3>MuslimJM1</h3>
+        <span class="role">Founder & Developer</span>
+        <p>Builds and manages the platform and competition system.</p>
+        <a href="https://www.instagram.com/muslimjm1?igsh=MWVjNXJiZzJlZ2o3bg==" target="_blank" class="member-insta">
+            <i class="fa-brands fa-instagram"></i> @muslimjm1
+        </a>
+    </div>
+
+    <div class="member-card">
+        <div class="avatar-wrapper">
+            <img src="images/abudy.jpeg" alt="Aboudy">
+        </div>
+        <h3>Aboudy</h3>
+        <span class="role">Finance & Sponsors</span>
+        <p>Manages sponsor relations, funding, and prize organization.</p>
+        <a href="https://www.instagram.com/abudy_togo?igsh=MXEwd25zcWMwZHBjZA==" target="_blank" class="member-insta">
+            <i class="fa-brands fa-instagram"></i> @aboudy_togo
+        </a>
+    </div>
+
+    <div class="member-card">
+        <div class="avatar-wrapper">
+            <img src="images/william.jpeg" alt="William">
+        </div>
+        <h3>William</h3>
+        <span class="role">Question Research</span>
+        <p>Prepares and verifies the daily questions with high accuracy.</p>
+        <a href="https://www.instagram.com/callmeyemar_?igsh=MXV0N2wzcjNhdHV1bw==" target="_blank" class="member-insta">
+            <i class="fa-brands fa-instagram"></i> @callmeyemar_
+        </a>
+    </div>
+
+    <div class="member-card">
+        <div class="avatar-wrapper">
+            <img src="images/elias.jpeg" alt="Elias">
+        </div>
+        <h3>Elias</h3>
+        <span class="role">Social Media</span>
+        <p>Manages Instagram content and keeps the community updated.</p>
+        <a href="https://www.instagram.com/eliyas_theqt?igsh=MTljMzVibGp3MTF5MA==" target="_blank" class="member-insta">
+            <i class="fa-brands fa-instagram"></i> @elias_theqt
+        </a>
+    </div>
+
+</section>
+
+    <section class="beliefs">
+        <h2>What We Believe</h2>
+        <div class="belief-container">
+            <div class="belief-item"><i class="fa-solid fa-scale-balanced"></i> Fair Play</div>
+            <div class="belief-item"><i class="fa-solid fa-check-double"></i> Verified Questions</div>
+            <div class="belief-item"><i class="fa-solid fa-fire"></i> Daily Challenge</div>
+            <div class="belief-item"><i class="fa-solid fa-mosque"></i> Faith in Action</div> 
+        </div>
+    </section>
+
+    <section class="footer-sections">
+        <div class="sponsors-box">
+            <h3>Sponsors</h3>
+            <p>We proudly thank our sponsors. They are highlighted on our Instagram page.</p>
+            <a href="https://www.instagram.com/ramadanleagueofficial?igsh=dWtiaThsYmF4bjdx" class="btn-gold">View Sponsors Highlight</a>
+        </div>
+        
+        <div class="contact-box">
+            <h3>Collaborate</h3>
+            <p>Want to collaborate or sponsor? Contact us on Instagram</p>
+            <a href="https://www.instagram.com/ramadanleagueofficial?igsh=dWtiaThsYmF4bjdx" class="insta-link"><i class="fa-brands fa-instagram"></i> @RamadanLeague</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© Ramadan League 2026</p>
+    </footer>
+
+     <script type="module" src="script.js"></script>
+<script type="module" src="firebaseInit.js"></script>
+
+</body>
+</html>
