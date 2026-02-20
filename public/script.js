@@ -142,6 +142,4 @@ if (avatar && menu){
     }
   });
 }
-if(ADMIN_UIDS.includes(user.uid)){
- document.getElementById("adminLink").style.display="block";
-}
+
