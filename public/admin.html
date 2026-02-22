@@ -1,8 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+body{
+ font-family: Arial;
+ background:#111;
+ color:#fff;
+ padding:20px;
+}
+
+h1{
+ margin-bottom:20px;
+}
+
+table{
+ width:100%;
+ border-collapse: collapse;
+ margin-bottom:20px;
+ background:#1a1a1a;
+}
+
+th,td{
+ padding:10px;
+ border:1px solid #333;
+ text-align:center;
+}
+
+th{
+ background:#222;
+}
+
+button{
+ padding:8px 14px;
+ margin:5px;
+ border:none;
+ cursor:pointer;
+ border-radius:6px;
+ font-weight:bold;
+}
+
+.filter-btn{
+ background:#333;
+ color:#fff;
+}
+
+.finalize-btn{
+ background:#d4af37;
+ color:#000;
+}
+
+.export-btn{
+ background:#0a84ff;
+ color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Admin Panel</h1>
+
 <script type="module">
 
 import { db, auth } from "./firebaseInit.js";
+import { finalizeDay } from "./scoreEngine.js";
+
 import {
- collection,getDocs,query,orderBy
+ collection,getDocs,query,orderBy,
+ doc,getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 import { onAuthStateChanged }
@@ -10,10 +78,7 @@ from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 /* ===== ADMIN LOCK ===== */
 
-const ADMIN_UIDS = [
- "0tnh2XNjDIT6VjGpIzsguSCfH352",
- "nhP9mJTcB7MpXXVXE3xMfQhakL92"
-];
+const ADMIN_UIDS = ["0tnh2XNjDIT6VjGpIzsguSCfH352"];
 
 onAuthStateChanged(auth,user=>{
  if(!user || !ADMIN_UIDS.includes(user.uid)){
@@ -81,9 +146,25 @@ window.exportCSV=function(){
  a.click();
 }
 
+/* ===== FINALIZE ===== */
+
+window.finalizeToday = async function(){
+
+ const configSnap = await getDoc(doc(db,"config","current"));
+ const day = configSnap.data().currentDay;
+
+ if(!confirm("Finalize " + day + " ?")) return;
+
+ await finalizeDay(day);
+
+ alert("Day Finalized ✅");
+
+ load();
+}
+
 </script>
 
-<table border="1">
+<table>
 <thead>
 <tr>
 <th>Name</th>
@@ -96,7 +177,13 @@ window.exportCSV=function(){
 <tbody id="tbody"></tbody>
 </table>
 
-<button onclick="filterCat('islamic')">Islamic</button>
-<button onclick="filterCat('general')">General</button>
-<button onclick="filterCat('sports')">Sports</button>
-<button onclick="exportCSV()">Export CSV</button>
+<button class="filter-btn" onclick="filterCat('islamic')">Islamic</button>
+<button class="filter-btn" onclick="filterCat('general')">General</button>
+<button class="filter-btn" onclick="filterCat('sports')">Sports</button>
+
+<button class="export-btn" onclick="exportCSV()">Export CSV</button>
+
+<button class="finalize-btn" onclick="finalizeToday()">Finalize Today</button>
+
+</body>
+</html>

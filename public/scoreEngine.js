@@ -33,7 +33,7 @@ function fuzzyMatch(userAnswer, correctAnswers){
  );
 }
 
-/* ================= MAIN SUBMIT ================= */
+/* ================= SUBMIT (NO SCORING HERE) ================= */
 
 export async function evaluateAnswer(cat,userAnswer,time){
 
@@ -41,9 +41,7 @@ export async function evaluateAnswer(cat,userAnswer,time){
  if(!user) return {ok:false};
 
  const configSnap = await getDoc(doc(db,"config","current"));
-const day = configSnap.data().currentDay;
-
- /* منع تكرار نفس الكاتيجوري */
+ const day = configSnap.data().currentDay;
 
  const alreadyQ = query(
   collection(db,"answers"),
@@ -58,98 +56,106 @@ const day = configSnap.data().currentDay;
   return {ok:false, msg:"already"};
  }
 
- /* جلب الاجابة الصحيحة */
-
  const dailyDoc = await getDoc(doc(db,"daily",day));
  if(!dailyDoc.exists()) return {ok:false};
 
  const correctAnswers = dailyDoc.data()[cat].answers;
-
  const ok = fuzzyMatch(userAnswer,correctAnswers);
 
  await addDoc(collection(db,"answers"),{
   uid:user.uid,
   name:user.displayName,
-  cat,day,
+  cat,
+  day,
   answer:userAnswer,
   ok,
   time,
   ts:serverTimestamp()
  });
 
- if(!ok) return {ok:false};
-
- /* ترتيب السرعة */
-
- const correctQ = query(
-  collection(db,"answers"),
-  where("day","==",day),
-  where("cat","==",cat),
-  where("ok","==",true),
-  orderBy("time","asc")
- );
-
- const correctSnap = await getDocs(correctQ);
-
- let rank = 0;
-
- correctSnap.forEach((d,i)=>{
-  if(d.data().uid === user.uid){
-   rank = i+1;
-  }
- });
-
- if(rank === 0 || rank > 2){
-  return {ok:true, rank:null};
- }
-
- /* تسجيل فائز */
-
- await addDoc(collection(db,"dailyScores"),{
-  uid:user.uid,
-  name:user.displayName,
-  cat,
-  day,
-  pts: CAT_POINTS[cat],
-  rank,
-  ts:serverTimestamp()
- });
-
- await recomputeBestOfDay(user.uid,user.displayName,day);
-
- return {ok:true, rank};
+ return {ok};
 }
 
-/* ================= BEST OF DAY ================= */
+/* ================= FINALIZE DAY ================= */
 
-async function recomputeBestOfDay(uid,name,day){
+export async function finalizeDay(day){
 
- const q = query(
-  collection(db,"dailyScores"),
-  where("uid","==",uid),
-  where("day","==",day)
- );
+ // منع التكرار
+ const flagRef = doc(db,"finalizedDays",day);
+ const flagSnap = await getDoc(flagRef);
 
- const snap = await getDocs(q);
+ if(flagSnap.exists()){
+  console.log("Already finalized");
+  return;
+ }
 
- let best = 0;
+ const answersRef = collection(db,"answers");
+ const playersBest = {};
 
- snap.forEach(d=>{
-  const p = d.data().pts;
-  if(p > best) best = p;
+ for(const cat of ["islamic","general","sports"]){
+
+   const q = query(
+     answersRef,
+     where("day","==",day),
+     where("cat","==",cat),
+     where("ok","==",true),
+     orderBy("time","asc")
+   );
+
+   const snap = await getDocs(q);
+
+   let i = 0;
+
+   for(const docSnap of snap.docs){
+
+     if(i >= 2) break;
+
+     const data = docSnap.data();
+     const pts = CAT_POINTS[cat];
+
+     await addDoc(collection(db,"dailyScores"),{
+       uid:data.uid,
+       name:data.name,
+       cat,
+       day,
+       rank:i+1,
+       pts,
+       ts:serverTimestamp()
+     });
+
+     // أعلى cat فقط
+     if(!playersBest[data.uid] || pts > playersBest[data.uid].pts){
+       playersBest[data.uid] = {
+         name:data.name,
+         pts
+       };
+     }
+
+     i++;
+   }
+ }
+
+ // تحديث users بأعلى cat فقط
+ for(const uid in playersBest){
+
+   const player = playersBest[uid];
+   const userRef = doc(db,"users",uid);
+   const userSnap = await getDoc(userRef);
+
+   const prev = userSnap.exists()
+     ? (userSnap.data().points || 0)
+     : 0;
+
+   await setDoc(userRef,{
+     name:player.name,
+     points: prev + player.pts
+   },{merge:true});
+ }
+
+ await setDoc(flagRef,{
+   day,
+   ts:serverTimestamp()
  });
 
- if(best === 0) return;
-
- const uref = doc(db,"users",uid);
- const udoc = await getDoc(uref);
-
- const prev = udoc.exists()
-  ? (udoc.data().points || 0)
-  : 0;
-
- await setDoc(uref,{
-  name,
-  points: prev + best
- },{merge:true});
+ console.log("Day Finalized Successfully");
 }
