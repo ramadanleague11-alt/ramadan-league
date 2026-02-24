@@ -99,7 +99,7 @@ export async function finalizeDay(day){
      where("day","==",day),
      where("cat","==",cat),
      where("ok","==",true),
-     orderBy("time","asc")
+     orderBy("ts","asc")
    );
 
    const snap = await getDocs(q);
