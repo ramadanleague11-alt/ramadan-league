@@ -9,10 +9,11 @@ body{
   color:white;
   min-height:100vh;
   background:
-    linear-gradient(rgba(10,15,30,.7), rgba(10,15,30,.9)),
-    url("images/images.jpeg");
+    linear-gradient(rgba(10,15,30,.6), rgba(10,15,30,.6)),
+    url("images/newversion.jpeg");
   background-size:cover;
   background-position:center;
+  background-repeat: no-repeat;
 }
 
 /* ===== Stars ===== */

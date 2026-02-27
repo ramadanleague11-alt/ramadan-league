@@ -1,161 +1,60 @@
-import { db,auth } from "./firebaseInit.js";
+import { db } from "./firebaseConfig.js";
 import {
- collection, addDoc, getDocs, query, where,
- orderBy, doc, setDoc, getDoc,
- serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  doc,
+  query,
+  where,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const CAT_POINTS = {
- islamic: 3,
- general: 2,
- sports: 1
-};
+export async function finalizeDay() {
+  const today = new Date().toISOString().split("T")[0];
 
-/* ================= NORMALIZER ================= */
+  const winnersQuery = query(
+    collection(db, "winnersManual"),
+    where("day", "==", today)
+  );
 
-function normalize(text){
- return text
-  .toLowerCase()
-  .replace(/[أإآ]/g,"ا")
-  .replace(/ة/g,"ه")
-  .replace(/ى/g,"ي")
-  .replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d))
-  .replace(/[^a-z0-9\u0600-\u06FF]+/gi," ")
-  .replace(/\s+/g," ")
-  .trim();
-}
+  const snapshot = await getDocs(winnersQuery);
 
-function fuzzyMatch(userAnswer, correctAnswers){
- if(!Array.isArray(correctAnswers)) return false;
- const user = normalize(userAnswer);
- return correctAnswers.every(ans =>
-   user.includes(normalize(ans))
- );
-}
+  if (snapshot.empty) {
+    alert("No winners added.");
+    return;
+  }
 
-/* ================= SUBMIT (NO SCORING HERE) ================= */
+  for (const winnerDoc of snapshot.docs) {
+    const winner = winnerDoc.data();
 
-export async function evaluateAnswer(cat,userAnswer,time){
+    const userRef = doc(db, "users", winner.name);
+    const userSnap = await getDocs(query(collection(db,"users"), where("name","==",winner.name)));
 
- const user = auth.currentUser;
- if(!user) return {ok:false};
+    let points = winner.rank === 1 ? 5 : 3;
 
- const configSnap = await getDoc(doc(db,"config","current"));
- const day = configSnap.data().currentDay;
+    if (!userSnap.empty) {
+      const userDocument = userSnap.docs[0];
+      await updateDoc(userDocument.ref, {
+        points: (userDocument.data().points || 0) + points
+      });
+    } else {
+      await addDoc(collection(db,"users"), {
+        name: winner.name,
+        points: points
+      });
+    }
 
- const alreadyQ = query(
-  collection(db,"answers"),
-  where("uid","==",user.uid),
-  where("day","==",day),
-  where("cat","==",cat)
- );
+    await addDoc(collection(db, "dailyScores"), {
+      day: today,
+      category: winner.category,
+      correctAnswer: winner.correctAnswer,
+      first: winner.rank === 1 ? winner.name : "",
+      second: winner.rank === 2 ? winner.name : ""
+    });
 
- const alreadySnap = await getDocs(alreadyQ);
+    await deleteDoc(winnerDoc.ref);
+  }
 
- if(!alreadySnap.empty){
-  return {ok:false, msg:"already"};
- }
-
- const dailyDoc = await getDoc(doc(db,"daily",day));
- if(!dailyDoc.exists()) return {ok:false};
-
- const correctAnswers = dailyDoc.data()[cat].answers;
- const ok = fuzzyMatch(userAnswer,correctAnswers);
-
- await addDoc(collection(db,"answers"),{
-  uid:user.uid,
-  name:user.displayName,
-  cat,
-  day,
-  answer:userAnswer,
-  ok,
-  time,
-  ts:serverTimestamp()
- });
-
- return {ok};
-}
-
-/* ================= FINALIZE DAY ================= */
-
-export async function finalizeDay(day){
-
- // منع التكرار
- const flagRef = doc(db,"finalizedDays",day);
- const flagSnap = await getDoc(flagRef);
-
- if(flagSnap.exists()){
-  console.log("Already finalized");
-  return;
- }
-
- const answersRef = collection(db,"answers");
- const playersBest = {};
-
- for(const cat of ["islamic","general","sports"]){
-
-   const q = query(
-     answersRef,
-     where("day","==",day),
-     where("cat","==",cat),
-     where("ok","==",true),
-     orderBy("ts","asc")
-   );
-
-   const snap = await getDocs(q);
-
-   let i = 0;
-
-   for(const docSnap of snap.docs){
-
-     if(i >= 2) break;
-
-     const data = docSnap.data();
-     const pts = CAT_POINTS[cat];
-
-     await addDoc(collection(db,"dailyScores"),{
-       uid:data.uid,
-       name:data.name,
-       cat,
-       day,
-       rank:i+1,
-       pts,
-       ts:serverTimestamp()
-     });
-
-     // أعلى cat فقط
-     if(!playersBest[data.uid] || pts > playersBest[data.uid].pts){
-       playersBest[data.uid] = {
-         name:data.name,
-         pts
-       };
-     }
-
-     i++;
-   }
- }
-
- // تحديث users بأعلى cat فقط
- for(const uid in playersBest){
-
-   const player = playersBest[uid];
-   const userRef = doc(db,"users",uid);
-   const userSnap = await getDoc(userRef);
-
-   const prev = userSnap.exists()
-     ? (userSnap.data().points || 0)
-     : 0;
-
-   await setDoc(userRef,{
-     name:player.name,
-     points: prev + player.pts
-   },{merge:true});
- }
-
- await setDoc(flagRef,{
-   day,
-   ts:serverTimestamp()
- });
-
- console.log("Day Finalized Successfully");
+  alert("Day Finalized Successfully!");
 }

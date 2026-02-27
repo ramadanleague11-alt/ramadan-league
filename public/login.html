@@ -1,49 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sign In — Ramadan League</title>
-
-<link rel="stylesheet" href="sign-in.css">
-
-<!-- Font Awesome -->
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  <title>Admin Login</title>
 </head>
-
 <body>
 
-<div class="signin-wrapper">
+<h2>Admin Login</h2>
+<button id="googleLogin">Login with Google</button>
 
-  <div class="signin-card">
+<script type="module">
+import { auth } from "./firebaseConfig.js";
+import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    <div class="logo">
-      <i class="fa-solid fa-moon"></i>
-      <h1>Ramadan League</h1>
-    </div>
+const provider = new GoogleAuthProvider();
 
-    <h2>Welcome Back</h2>
-    <p class="subtitle">
-      Sign in to join today’s challenge
-    </p>
+document.getElementById("googleLogin").addEventListener("click", async () => {
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
 
-    <button id="googleBtn" class="google-btn">
-      <i class="fa-brands fa-google"></i>
-      Continue with Google
-    </button>
+  if (user.email !== "ziadjamie12@gmail.com") {
+    alert("Not authorized");
+    await auth.signOut();
+    return;
+  }
 
-    <p class="note">
-      Fast • Fair • Daily Competition
-    </p>
+  window.location.href = "admin.html";
+});
+</script>
 
-  </div>
-
-</div>
-<script type="module" src="firebaseInit.js"></script>
-
-<script type="module" src="login.js"></script>
 </body>
 </html>

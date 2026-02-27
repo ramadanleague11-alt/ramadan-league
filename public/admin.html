@@ -1,189 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Panel</title>
-
-<style>
-body{
- font-family: Arial;
- background:#111;
- color:#fff;
- padding:20px;
-}
-
-h1{
- margin-bottom:20px;
-}
-
-table{
- width:100%;
- border-collapse: collapse;
- margin-bottom:20px;
- background:#1a1a1a;
-}
-
-th,td{
- padding:10px;
- border:1px solid #333;
- text-align:center;
-}
-
-th{
- background:#222;
-}
-
-button{
- padding:8px 14px;
- margin:5px;
- border:none;
- cursor:pointer;
- border-radius:6px;
- font-weight:bold;
-}
-
-.filter-btn{
- background:#333;
- color:#fff;
-}
-
-.finalize-btn{
- background:#d4af37;
- color:#000;
-}
-
-.export-btn{
- background:#0a84ff;
- color:#fff;
-}
-</style>
+  <title>Admin Panel</title>
 </head>
-
 <body>
 
-<h1>Admin Panel</h1>
+<h2>Add Winner</h2>
+
+<input type="text" id="playerName" placeholder="Player Name">
+<input type="text" id="category" placeholder="Category">
+<input type="text" id="correctAnswer" placeholder="Correct Answer">
+<select id="rank">
+  <option value="1">1st</option>
+  <option value="2">2nd</option>
+</select>
+
+<button id="addWinner">Add Winner</button>
+<button id="finalizeDay">Finalize Day</button>
 
 <script type="module">
-
-import { db, auth } from "./firebaseInit.js";
+import { db } from "./firebaseConfig.js";
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { finalizeDay } from "./scoreEngine.js";
 
-import {
- collection,getDocs,query,orderBy,
- doc,getDoc
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+document.getElementById("addWinner").addEventListener("click", async () => {
+  const name = document.getElementById("playerName").value;
+  const category = document.getElementById("category").value;
+  const correctAnswer = document.getElementById("correctAnswer").value;
+  const rank = parseInt(document.getElementById("rank").value);
 
-import { onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  const today = new Date().toISOString().split("T")[0];
 
-/* ===== ADMIN LOCK ===== */
+  await addDoc(collection(db,"winnersManual"), {
+    name,
+    category,
+    correctAnswer,
+    rank,
+    day: today
+  });
 
-const ADMIN_UIDS = ["0tnh2XNjDIT6VjGpIzsguSCfH352"];
-
-onAuthStateChanged(auth,user=>{
- if(!user || !ADMIN_UIDS.includes(user.uid)){
-   document.body.innerHTML="Not allowed";
-   return;
- }
- load();
+  alert("Winner Added!");
 });
 
-/* ===== LOAD ===== */
-
-async function load(){
-
- const q=query(collection(db,"dailyScores"),orderBy("ts","desc"));
- const snap=await getDocs(q);
-
- const rows=[];
-
- snap.forEach(d=>{
-  rows.push(d.data());
- });
-
- render(rows);
- window.ALL = rows;
-}
-
-/* ===== TABLE ===== */
-
-function render(arr){
- const tbody=document.getElementById("tbody");
- tbody.innerHTML="";
-
- arr.forEach(x=>{
-  tbody.innerHTML+=`
-   <tr>
-    <td>${x.name}</td>
-    <td>${x.cat}</td>
-    <td>${x.pts}</td>
-    <td>${x.rank}</td>
-    <td>${x.day}</td>
-   </tr>`;
- });
-}
-
-/* ===== FILTER ===== */
-
-window.filterCat = function(cat){
- render(window.ALL.filter(x=>x.cat===cat));
-}
-
-/* ===== CSV ===== */
-
-window.exportCSV=function(){
-
- let csv="name,cat,pts,rank,day\n";
-
- window.ALL.forEach(x=>{
-  csv+=`${x.name},${x.cat},${x.pts},${x.rank},${x.day}\n`;
- });
-
- const blob=new Blob([csv]);
- const a=document.createElement("a");
- a.href=URL.createObjectURL(blob);
- a.download="report.csv";
- a.click();
-}
-
-/* ===== FINALIZE ===== */
-
-window.finalizeToday = async function(){
-
- const configSnap = await getDoc(doc(db,"config","current"));
- const day = configSnap.data().currentDay;
-
- if(!confirm("Finalize " + day + " ?")) return;
-
- await finalizeDay(day);
-
- alert("Day Finalized ✅");
-
- load();
-}
-
+document.getElementById("finalizeDay").addEventListener("click", finalizeDay);
 </script>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Cat</th>
-<th>Pts</th>
-<th>Rank</th>
-<th>Day</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
-
-<button class="filter-btn" onclick="filterCat('islamic')">Islamic</button>
-<button class="filter-btn" onclick="filterCat('general')">General</button>
-<button class="filter-btn" onclick="filterCat('sports')">Sports</button>
-
-<button class="export-btn" onclick="exportCSV()">Export CSV</button>
-
-<button class="finalize-btn" onclick="finalizeToday()">Finalize Today</button>
 
 </body>
 </html>

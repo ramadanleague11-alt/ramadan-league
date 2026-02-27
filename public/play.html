@@ -1,86 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Play — Ramadan League</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Results</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    .container {
+      padding: 40px 20px;
+    }
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="play.css">
-</head>
+    .results-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
 
-<body>
+    .card {
+      background: #1e293b;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
 
-<header class="navbar">
-  <div class="logo">
-    <img src="images/logo.png">
-  </div>
-  <nav>
+    .category {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: gold;
+    }
+
+    .winner {
+      font-size: 18px;
+      margin: 5px 0;
+    }
+
+    .correct {
+      margin-top: 10px;
+      font-style: italic;
+      color: #ccc;
+    }
+
+    a {
+      color: gold;
+      text-decoration: none;
+    }
+.btn-back {
+    /* التموضع */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* مسافة بين السهم والنص */
+    margin: 20px; /* مسافة من الحواف */
+    
+    /* الشكل والألوان */
+    background-color: rgba(255, 255, 255, 0.05); /* خلفية داكنة جداً وشفافة */
+    color: #e0e0e0; /* لون نص فاتح */
+    padding: 8px 16px;
+    border-radius: 50px; /* تجعل الزر بشكل كبسولة مثل الصورة */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* إطار رفيع ولطيف */
+    
+    /* الخط والتنسيق */
+    text-decoration: none;
+    font-size: 14px;
+    font-family: sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* تأثير الهوفر (عند مرور الماوس) */
+.btn-back:hover {
+    background-color: rgba(255, 255, 255, 0.15); /* تفتيح الخلفية قليلاً */
+    border-color: rgba(255, 255, 255, 0.6); /* تفتيح الإطار */
+    transform: translateY(-2px); /* رفعة بسيطة للأعلى */
+}
          
-  </nav>
-</header>
-
-<div class="back-container">
-      <a href="index.html" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i> Back to Home
-      </a> </div>
-<section class="play-wrap">
-  <nav>
-  <span id="profileName"></span>
-</nav>
-
-<h1>Today's Challenge</h1>
-
-<div class="hijri" id="hijriDate">
-Loading Hijri date...
+  </style>
+</head>
+<body>
+<a href="index.html" class="btn-back">
+    <span>←</span> Back to Home
+</a>
+<div class="container">
+  <h1>🌙 Ramadan League</h1>
+  <div class="results-title">Today's Official Results</div>
+  <div id="resultsContainer"></div>
+  <br>
+  <a href="leaderboard.html">View Overall Ranking</a>
 </div>
-
-<div class="main-timer">
-Time until quiz:
-<span id="mainTimer">00:00:00</span>
-</div>
-
-<div class="challenge-grid">
-
-  <!-- Islamic -->
-  <div class="challenge-box islamic" data-cat="islamic">
-    <h3><i class="fa-solid fa-mosque"></i> Islamic — 3 pts</h3>
-        <div class="question">The question will appear at 10:00 PM</div>
-    <input type="text" placeholder="Type answer">
-    <div class="actions">
-      <button class="voice-btn"><i class="fa-solid fa-microphone"></i></button>
-      <button class="submit-btn">Submit</button>
-    </div>
-  </div>
-
-  <!-- General -->
-  <div class="challenge-box general" data-cat="general">
-    <h3><i class="fa-solid fa-globe"></i> General — 2 pts</h3>
-    <div class="question">The question will appear at 10:00 PM</div>
-    <input type="text" placeholder="Type answer">
-    <div class="actions">
-      <button class="voice-btn"><i class="fa-solid fa-microphone"></i></button>
-      <button class="submit-btn">Submit</button>
-    </div>
-  </div>
-
-  <!-- Sports -->
-  <div class="challenge-box sports" data-cat="sports">
-    <h3><i class="fa-solid fa-trophy"></i> Sports — 1 pt</h3>
-    <div class="question">The question will appear at 10:00 PM</div>
-    <input type="text" placeholder="Type answer">
-    <div class="actions">
-      <button class="voice-btn"><i class="fa-solid fa-microphone"></i></button>
-      <button class="submit-btn">Submit</button>
-    </div>
-  </div>
-
-</div>
-
-</section>
 
 <script type="module" src="play.js"></script>
 </body>
