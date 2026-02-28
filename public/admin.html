@@ -3,62 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
-  </head>
+  <title>Admin Panel | Winners Management</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #14532d, #052e1b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .admin-card {
+      background: #0b3d2e;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    h2 { text-align: center; color: #4ade80; margin-bottom: 25px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-size: 14px; color: #cbd5e1; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #14532d;
+      background: #052e1b;
+      color: white;
+      box-sizing: border-box;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+    #addWinner { background: #4ade80; color: #052e1b; }
+    #finalizeDay { background: #facc15; color: #052e1b; margin-top: 20px; }
+    button:hover { opacity: 0.9; transform: translateY(-2px); }
+  </style>
+</head>
 <body>
 
-  <div class="admin-card">
-    <h2>🌙 Add New Winner</h2>
-    <button id="addWinner">Add to Temporary List</button>
-    <button id="finalizeDay">Finalize Day & Give Points ✨</button>
-    
-    <button id="uploadOldWinners" style="background: #3b82f6; color: white; margin-top: 20px; width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer;">
-      رفع بيانات الفائزين القدامى 🚀
-    </button>
+<div class="admin-card">
+  <h2>🌙 Add New Winner</h2>
+  
+  <div class="form-group">
+    <label>Player Name (Instagram)</label>
+    <input type="text" id="playerName" placeholder="Leave empty if No Winner...">
   </div>
 
-  <script type="module">
-    import { db } from "./firebaseInit.js";
-    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { finalizeDay } from "./scoreEngine.js";
+  <div class="form-group">
+    <label>Category</label>
+    <select id="category">
+      <option value="Islam">Islam (3 pts)</option>
+      <option value="General">General (2 pts)</option>
+      <option value="Sports">Sports (1 pt)</option>
+    </select>
+  </div>
 
-    // 1. كود إضافة فائز جديد (المؤقت)
-    document.getElementById("addWinner").addEventListener("click", async () => {
-      // الكود الخاص بك هنا...
-    });
+  <div class="form-group">
+    <label>Correct Answer</label>
+    <input type="text" id="correctAnswer" placeholder="What was the answer?">
+  </div>
 
-    // 2. ربط زر إنهاء اليوم
-    document.getElementById("finalizeDay").addEventListener("click", finalizeDay);
+  <div class="form-group">
+    <label>Rank</label>
+    <select id="rank">
+      <option value="1">1st Place (🥇)</option>
+      <option value="2">2nd Place (🥈)</option>
+    </select>
+  </div>
 
-    // 3. كود رفع الفائزين القدامى (يُوضع هنا داخل السكريبت)
-    document.getElementById("uploadOldWinners").addEventListener("click", async () => {
-      const oldWinners = [
-        { name: "Gammachiis Saido", points: 5 },
-        { name: "Sumeya Hassan", points: 5 },
-        { name: "Ali Abdullah", points: 4 },
-        { name: "Ramadan Mo", points: 4 },
-        { name: "Naafija Khalifa", points: 3 },
-        { name: "Muaz Habibi", points: 2 },
-        { name: "3issaa Abdullah", points: 2 },
-        { name: "Emad", points: 2 },
-        { name: "Mubarak Anwar", points: 2 },
-        { name: "Enoal Ismael", points: 2 },
-        { name: "Soreti Said", points: 2 },
-        { name: "Eyman Sharaf", points: 1 }
-      ];
+  <button id="addWinner">Add to Temporary List</button>
+  <hr style="border: 0.5px solid rgba(255,255,255,0.1); margin: 25px 0;">
+  <button id="finalizeDay">Finalize Day & Give Points ✨</button>
+</div>
 
-      try {
-        for (const winner of oldWinners) {
-          await addDoc(collection(db, "users"), {
-            name: winner.name,
-            points: winner.points
-          });
-        }
-        alert("تم رفع جميع الفائزين بنجاح! 🎉");
-      } catch (e) {
-        alert("حدث خطأ: " + e.message);
-      }
-    });
-  </script>
+<script type="module">
+  // Using the unified firebaseInit.js and scoreEngine.js
+  import { db } from "./firebaseInit.js";
+  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { finalizeDay } from "./scoreEngine.js";
+
+  document.getElementById("addWinner").addEventListener("click", async () => {
+    // Logic: If name is empty, it becomes "No Winner" automatically
+    const nameInput = document.getElementById("playerName").value.trim();
+    const name = nameInput === "" ? "No Winner" : nameInput;
+    
+    const category = document.getElementById("category").value;
+    const correctAnswer = document.getElementById("correctAnswer").value.trim();
+    const rank = parseInt(document.getElementById("rank").value);
+
+    // Only Correct Answer is strictly required
+    if(!correctAnswer) return alert("Please enter the Correct Answer!");
+
+    const today = new Date().toISOString().split("T")[0];
+
+    try {
+      await addDoc(collection(db, "winnersManual"), {
+        name, 
+        category, 
+        correctAnswer, 
+        rank, 
+        day: today
+      });
+      alert(`Entry added successfully for ${name}!`);
+      document.getElementById("playerName").value = "";
+      document.getElementById("correctAnswer").value = "";
+    } catch (e) { 
+      console.error(e);
+      alert("Error adding winner: " + e.message); 
+    }
+  });
+
+  document.getElementById("finalizeDay").addEventListener("click", finalizeDay);
+</script>
+
 </body>
 </html>
