@@ -1,12 +1,6 @@
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-import { getAuth } from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-import { getFirestore, doc, setDoc } from
-"https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBb6cXv4VMlaIYzSwH7P7j4HaMzC8r8Vqg",
@@ -18,26 +12,17 @@ const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-const auth = getAuth(app);
-const db = getFirestore(app);
-import { onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-/* ===== AUTO CREATE USER DOC ===== */
-
-onAuthStateChanged(auth, async (user)=>{
-  if(!user) return;
-
-  await setDoc(doc(db,"users",user.uid),{
-    name: user.displayName || "player",
-    email: user.email || "",
-    points: 0,
-    streak: 0,
-    createdAt: new Date()
-  }, { merge:true });
-
-  console.log("user doc ensured");
+// هذا الجزء سيعمل فقط عند تسجيل دخول المستخدم (اختياري)
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    await setDoc(doc(db, "users", user.uid), {
+      name: user.displayName || "player",
+      email: user.email || "",
+      points: 0
+    }, { merge: true });
+    console.log("User doc ensured");
+  }
 });
-
-export { auth, db };

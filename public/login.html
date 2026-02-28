@@ -2,30 +2,50 @@
 <html>
 <head>
   <title>Admin Login</title>
-</head>
+  <link rel="stylesheet" href="sign-in.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
 <body>
 
-<h2>Admin Login</h2>
-<button id="googleLogin">Login with Google</button>
+<div class="signin-wrapper">
+  <div class="signin-card">
+    <div class="logo">
+      <h1>🌙 Ramadan League</h1>
+    </div>
+    <h2>Admin Login</h2>
+    <p class="subtitle">Welcome back! Please sign in to manage winners.</p>
+    
+    <button id="googleLogin" class="google-btn">
+      Login with Google
+    </button>
+    
+    <p class="note">Authorized admins only.</p>
+  </div>
+</div>
 
 <script type="module">
-import { auth } from "./firebaseConfig.js";
-import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { auth } from "./firebaseInit.js"; 
+  import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const provider = new GoogleAuthProvider();
+  const provider = new GoogleAuthProvider();
 
-document.getElementById("googleLogin").addEventListener("click", async () => {
-  const result = await signInWithPopup(auth, provider);
-  const user = result.user;
+  document.getElementById("googleLogin").addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-  if (user.email !== "ziadjamie12@gmail.com") {
-    alert("Not authorized");
-    await auth.signOut();
-    return;
-  }
+      if (user.email !== "ziadjamie12@gmail.com") {
+        alert("Access Denied: You are not an admin.");
+        await auth.signOut();
+        return;
+      }
 
-  window.location.href = "admin.html";
-});
+      window.location.href = "admin.html";
+    } catch (error) {
+      console.error("Auth Error:", error);
+      alert("Login failed: " + error.message);
+    }
+  });
 </script>
 
 </body>
