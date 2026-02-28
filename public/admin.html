@@ -129,5 +129,39 @@
   document.getElementById("finalizeDay").addEventListener("click", finalizeDay);
 </script>
 
+<button id="uploadOldWinners" style="background:
+ #3b82f6; margin-top: 10px;">رفع بيانات الفائزين القدامى 🚀</button>
+
+document.getElementById("uploadOldWinners").addEventListener("click", async () => {
+  const oldWinners = [
+    { name: "Gammachiis Saido", points: 5 },
+    { name: "Sumeya Hassan", points: 5 },
+    { name: "Ali Abdullah", points: 4 },
+    { name: "Ramadan Mo", points: 4 },
+    { name: "Naafija Khalifa", points: 3 },
+    { name: "Muaz Habibi", points: 2 },
+    { name: "3issaa Abdullah", points: 2 },
+    { name: "Emad", points: 2 },
+    { name: "Mubarak Anwar", points: 2 },
+    { name: "Enoal Ismael", points: 2 },
+    { name: "Soreti Said", points: 2 },
+    { name: "Eyman Sharaf", points: 1 }
+  ];
+
+  try {
+    for (const winner of oldWinners) {
+      // استخدام addDoc بيخلي الفايربيس يعمل Auto-ID تلقائي لكل شخص
+      await addDoc(collection(db, "users"), {
+        name: winner.name,
+        points: winner.points
+      });
+    }
+    alert("تم رفع جميع الفائزين بنجاح! 🎉");
+  } catch (e) {
+    alert("حدث خطأ أثناء الرفع: " + e.message);
+  }
+});
+
+
 </body>
 </html>
