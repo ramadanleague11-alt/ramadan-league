@@ -1,99 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Today's Results</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Results | Ramadan League</title>
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        /* التنسيقات الإضافية فقط للنتائج */
+        body {
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
 
-    .container {
-      padding: 40px 20px;
-    }
+        .container {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
 
-    .results-title {
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
+        .results-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
 
-    .card {
-      background: #1e293b;
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 500px;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-    }
+        /* حاوية الكروت */
+        #resultsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
 
-    .category {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: gold;
-    }
+        /* البوكس المربع الأسود الصريح */
+        .card {
+            background-color: #000000 !important; /* أسود صريح */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* إطار أبيض نحيف وباين */
+            border-radius: 12px;
+            padding: 25px;
+            width: 320px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
 
-    .winner {
-      font-size: 18px;
-      margin: 5px 0;
-    }
+        /* الفئة باللون الذهبي */
+        .category {
+            font-size: 22px;
+            font-weight: bold;
+            color: #facc15; /* ذهبي */
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
 
-    .correct {
-      margin-top: 10px;
-      font-style: italic;
-      color: #ccc;
-    }
+        .category small {
+            font-size: 14px;
+            color: #ffffff;
+            opacity: 0.8;
+            margin-left: 5px;
+        }
 
-    a {
-      color: gold;
-      text-decoration: none;
-    }
-.btn-back {
-    /* التموضع */
-    display: inline-flex;
-    align-items: center;
-    gap: 8px; /* مسافة بين السهم والنص */
-    margin: 20px; /* مسافة من الحواف */
-    
-    /* الشكل والألوان */
-    background-color: rgba(255, 255, 255, 0.05); /* خلفية داكنة جداً وشفافة */
-    color: #e0e0e0; /* لون نص فاتح */
-    padding: 8px 16px;
-    border-radius: 50px; /* تجعل الزر بشكل كبسولة مثل الصورة */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* إطار رفيع ولطيف */
-    
-    /* الخط والتنسيق */
-    text-decoration: none;
-    font-size: 14px;
-    font-family: sans-serif;
-    transition: all 0.3s ease;
-}
+        /* أسماء الفائزين */
+        .winner {
+            font-size: 18px;
+            margin: 8px 0;
+            color: #ffffff;
+            text-align: left;
+        }
 
-/* تأثير الهوفر (عند مرور الماوس) */
-.btn-back:hover {
-    background-color: rgba(255, 255, 255, 0.15); /* تفتيح الخلفية قليلاً */
-    border-color: rgba(255, 255, 255, 0.6); /* تفتيح الإطار */
-    transform: translateY(-2px); /* رفعة بسيطة للأعلى */
-}
-         
-  </style>
+        /* الخط الفاصل الأبيض النحيف */
+        .divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        /* منطقة الإجابة الصحيحة - تمنع خروج النص */
+        .answer-box {
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .correct-label {
+            font-size: 12px;
+            color: #cccccc;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .correct-val {
+            font-size: 16px;
+            color: #ffffff;
+            line-height: 1.5;
+            word-wrap: break-word; /* يكسر الكلمات الطويلة */
+            overflow-wrap: break-word; /* يضمن بقاء النص داخل الصندوق */
+            max-width: 100%;
+        }
+
+        /* زر الرجوع */
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* زر الترتيب العام والفوتر */
+        .footer-nav {
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .view-overall-btn {
+            color: #facc15;
+            border: 1px solid #facc15;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .view-overall-btn:hover {
+            background: #facc15;
+            color: #000;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<a href="index.html" class="btn-back">
-    <span>←</span> Back to Home
-</a>
-<div class="container">
-  <h1>🌙 Ramadan League</h1>
-  <div class="results-title">Today's Official Results</div>
-  <div id="resultsContainer"></div>
-  <br>
-  <a href="leaderboard.html">View Overall Ranking</a>
-</div>
 
-<script type="module" src="play.js"></script>
+    <div class="container">
+        <a href="index.html" class="btn-back"><span>←</span> Back to Home</a>
+        
+        <div class="results-title">🌙 Today's Official Results</div>
+        
+        <div id="resultsContainer">
+            </div>
+
+        <div class="footer-nav">
+            <a href="leaderboard.html" class="view-overall-btn">View Overall Ranking 🏆</a>
+            <footer>
+                © 2026 Ramadan League | All Rights Reserved
+            </footer>
+        </div>
+    </div>
+
+    <script type="module" src="play.js"></script>
 </body>
 </html>

@@ -1,116 +1,67 @@
-import { getAuth, onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { db } from "./firebaseInit.js";
+import { 
+  collection, getDocs, query, orderBy, limit, where 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-import {
- getFirestore, collection, getDocs,
- query, orderBy, limit, where,
- doc, getDoc
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+async function loadOverall() {
+  const list = document.getElementById("overallList");
+  if (!list) return;
+  list.innerHTML = "<li>Loading Overall Ranking...</li>";
 
-import { app } from "./firebaseInit.js";
+  try {
+    const q = query(collection(db, "users"), orderBy("points", "desc"), limit(20));
+    const snap = await getDocs(q);
+    
+    list.innerHTML = "";
+    if (snap.empty) {
+        list.innerHTML = "<li>No players found yet.</li>";
+        return;
+    }
 
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* ================= CURRENT DAY ================= */
-
-async function getCurrentDay(){
- const snap = await getDoc(doc(db,"config","current"));
- if(!snap.exists()) return null;
- return snap.data().currentDay;
+    let rank = 1;
+    snap.forEach(doc => {
+      const u = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span class="rank">#${rank}</span>
+        <span class="name">${u.name}</span>
+        <span class="pts">${u.points || 0} pts</span>
+      `;
+      list.appendChild(li);
+      rank++;
+    });
+  } catch (e) {
+    console.error(e);
+    list.innerHTML = "<li>Error loading data.</li>";
+  }
 }
 
-/* ================= DAILY LEADERBOARD ================= */
+async function loadDaily() {
+  const list = document.getElementById("dailyList");
+  if (!list) return;
+  
+  const today = new Date().toISOString().split("T")[0];
+  const q = query(collection(db, "dailyScores"), where("day", "==", today));
+  const snap = await getDocs(q);
 
-async function loadDaily(){
+  list.innerHTML = "";
+  if (snap.empty) {
+    list.innerHTML = "<li>No winners announced for today yet.</li>";
+    return;
+  }
 
- const list = document.getElementById("dailyList");
- if(!list) return;
-
- list.innerHTML = "Loading...";
-
- const day = await getCurrentDay();
- if(!day){
-  list.innerHTML = "No active day";
-  return;
- }
-
- const snap = await getDocs(
-  query(
-   collection(db,"dailyScores"),
-   where("day","==",day),
-   orderBy("pts","desc"),
-   limit(20)
-  )
- );
-
- list.innerHTML = "";
-
- if(snap.empty){
-  list.innerHTML = "No results yet";
-  return;
- }
-
- let rank = 1;
-
- snap.forEach(d=>{
-  const x = d.data();
-
-  const li = document.createElement("li");
-  li.textContent =
-   `${rank}. ${x.name || "User"} — ${x.pts} pts`;
-
-  list.appendChild(li);
-  rank++;
- });
+  snap.forEach(doc => {
+    const d = doc.data();
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div class="daily-card">
+        <strong>${d.category}</strong>: 🥇 ${d.first} | 🥈 ${d.second}
+      </div>
+    `;
+    list.appendChild(li);
+  });
 }
 
-/* ================= OVERALL LEADERBOARD ================= */
-
-async function loadOverall(){
-
- const list = document.getElementById("overallList");
- if(!list) return;
-
- list.innerHTML = "Loading...";
-
- const snap = await getDocs(
-  query(
-   collection(db,"users"),
-   orderBy("points","desc"),
-   limit(20)
-  )
- );
-
- list.innerHTML = "";
-
- if(snap.empty){
-  list.innerHTML = "No results yet";
-  return;
- }
-
- let rank = 1;
-
- snap.forEach(d=>{
-  const u = d.data();
-
-  const li = document.createElement("li");
-  li.textContent =
-   `${rank}. ${u.name || "User"} — ${u.points || 0} pts`;
-
-  list.appendChild(li);
-  rank++;
- });
-}
-
-/* ================= INIT ================= */
-
-async function init(){
- await loadDaily();
- await loadOverall();
-}
-
-onAuthStateChanged(auth, user=>{
- if(!user) return;
- init();
-});
+// تشغيل الوظائف فور تحميل الصفحة دون انتظار تسجيل الدخول
+loadOverall();
+loadDaily();
