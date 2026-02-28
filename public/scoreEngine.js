@@ -4,7 +4,6 @@ import {
   getDocs,
   addDoc,
   updateDoc,
-  doc,
   query,
   where,
   deleteDoc
@@ -12,68 +11,55 @@ import {
 
 export async function finalizeDay() {
   const today = new Date().toISOString().split("T")[0];
+  const pointsTable = { "Islam": 3, "General": 2, "Sports": 1 };
 
-  // قاموس النقاط الجديد
-  const pointsTable = {
-    "Islam": 3,
-    "General": 2,
-    "Sports": 1
-  };
-
-  const winnersQuery = query(
-    collection(db, "winnersManual"),
-    where("day", "==", today)
-  );
-
+  const winnersQuery = query(collection(db, "winnersManual"), where("day", "==", today));
   const snapshot = await getDocs(winnersQuery);
 
-  // حالة عدم وجود فائزين (تعديلك)
   if (snapshot.empty) {
-    await addDoc(collection(db, "dailyScores"), {
-      day: today,
-      category: "None",
-      correctAnswer: "No correct answers today",
-      first: "",
-      second: ""
-    });
-    alert("No winners today, dailyScores created with empty results.");
+    alert("No entries found in the temporary list for today.");
     return;
   }
 
-  // معالجة كل فائز
+  // كائن لتجميع الفائزين حسب الفئة قبل الحفظ
+  const categorySummary = {};
+
   for (const winnerDoc of snapshot.docs) {
     const winner = winnerDoc.data();
-    
-    // النقاط بناءً على الفئة (Rank 1 & 2 بياخدوا نفس النقاط)
-    const pointsToAdd = pointsTable[winner.category] || 0;
+    const cat = winner.category;
 
-    // 1. تحديث نقاط المستخدم
-    const userQuery = query(collection(db, "users"), where("name", "==", winner.name));
-    const userSnap = await getDocs(userQuery);
-
-    if (!userSnap.empty) {
-      const userDocRef = userSnap.docs[0].ref;
-      const currentPoints = userSnap.docs[0].data().points || 0;
-      await updateDoc(userDocRef, { points: currentPoints + pointsToAdd });
-    } else {
-      await addDoc(collection(db, "users"), {
-        name: winner.name,
-        points: pointsToAdd
-      });
+    // تجهيز الكائن للفئة إذا لم تكن موجودة
+    if (!categorySummary[cat]) {
+      categorySummary[cat] = { day: today, category: cat, correctAnswer: winner.correctAnswer, first: "No Winner", second: "No Winner" };
     }
 
-    // 2. إضافة السجل اليومي للعرض في صفحة play.html
-    await addDoc(collection(db, "dailyScores"), {
-      day: today,
-      category: winner.category,
-      correctAnswer: winner.correctAnswer,
-      first: winner.rank === 1 ? winner.name : "",
-      second: winner.rank === 2 ? winner.name : ""
-    });
+    // تعيين الأسماء حسب المركز
+    if (winner.rank === 1) categorySummary[cat].first = winner.name;
+    if (winner.rank === 2) categorySummary[cat].second = winner.name;
 
-    // 3. حذف من القائمة المؤقتة
+    // تحديث النقاط (فقط إذا كان هناك اسم فائز حقيقي)
+    if (winner.name !== "No Winner") {
+      const pointsToAdd = pointsTable[cat] || 0;
+      const userQuery = query(collection(db, "users"), where("name", "==", winner.name));
+      const userSnap = await getDocs(userQuery);
+
+      if (!userSnap.empty) {
+        const userDocRef = userSnap.docs[0].ref;
+        const currentPoints = userSnap.docs[0].data().points || 0;
+        await updateDoc(userDocRef, { points: currentPoints + pointsToAdd });
+      } else {
+        await addDoc(collection(db, "users"), { name: winner.name, points: pointsToAdd });
+      }
+    }
+
+    // حذف من القائمة المؤقتة بعد المعالجة
     await deleteDoc(winnerDoc.ref);
   }
 
-  alert("Day Finalized! Points updated based on categories.");
+  // حفظ النتائج المجمعة في dailyScores (سجل واحد لكل فئة)
+  for (const cat in categorySummary) {
+    await addDoc(collection(db, "dailyScores"), categorySummary[cat]);
+  }
+
+  alert("Day Finalized! Winners organized and points updated.");
 }

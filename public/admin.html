@@ -59,7 +59,7 @@
   
   <div class="form-group">
     <label>Player Name (Instagram)</label>
-    <input type="text" id="playerName" placeholder="Enter name exactly...">
+    <input type="text" id="playerName" placeholder="Leave empty if No Winner...">
   </div>
 
   <div class="form-group">
@@ -90,35 +90,42 @@
 </div>
 
 <script type="module">
-  // Make sure your file is exactly named firebaseInit.js
+  // Using the unified firebaseInit.js and scoreEngine.js
   import { db } from "./firebaseInit.js";
   import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { finalizeDay } from "./scoreEngine.js";
 
-  // Add winner to the temp list
   document.getElementById("addWinner").addEventListener("click", async () => {
-    const name = document.getElementById("playerName").value.trim();
+    // Logic: If name is empty, it becomes "No Winner" automatically
+    const nameInput = document.getElementById("playerName").value.trim();
+    const name = nameInput === "" ? "No Winner" : nameInput;
+    
     const category = document.getElementById("category").value;
-    const correctAnswer = document.getElementById("correctAnswer").value;
+    const correctAnswer = document.getElementById("correctAnswer").value.trim();
     const rank = parseInt(document.getElementById("rank").value);
 
-    if(!name || !correctAnswer) return alert("Please fill all fields");
+    // Only Correct Answer is strictly required
+    if(!correctAnswer) return alert("Please enter the Correct Answer!");
 
     const today = new Date().toISOString().split("T")[0];
 
     try {
       await addDoc(collection(db, "winnersManual"), {
-        name, category, correctAnswer, rank, day: today
+        name, 
+        category, 
+        correctAnswer, 
+        rank, 
+        day: today
       });
-      alert(`Successfully added ${name}!`);
+      alert(`Entry added successfully for ${name}!`);
       document.getElementById("playerName").value = "";
+      document.getElementById("correctAnswer").value = "";
     } catch (e) { 
       console.error(e);
       alert("Error adding winner: " + e.message); 
     }
   });
 
-  // Finalize the day (move data to dailyScores and update user points)
   document.getElementById("finalizeDay").addEventListener("click", finalizeDay);
 </script>
 
